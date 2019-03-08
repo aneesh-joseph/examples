@@ -4,6 +4,7 @@ from itertools import count
 
 import torch
 import torch.nn.functional as F
+import torch.optim as optim
 
 POLY_DEGREE = 4
 W_target = torch.randn(POLY_DEGREE, 1) * 5
@@ -40,13 +41,14 @@ def get_batch(batch_size=32):
 
 # Define model
 fc = torch.nn.Linear(W_target.size(0), 1)
+optimizer = optim.SGD(fc.parameters(), lr=0.1)
 
 for batch_idx in count(1):
     # Get data
     batch_x, batch_y = get_batch()
 
     # Reset gradients
-    fc.zero_grad()
+    optimizer.zero_grad()
 
     # Forward pass
     output = F.smooth_l1_loss(fc(batch_x), batch_y)
